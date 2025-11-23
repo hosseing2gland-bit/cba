@@ -9,6 +9,8 @@ import rateLimit from 'express-rate-limit';
 import authRoutes from './routes/authRoutes.js';
 import profileRoutes from './routes/profileRoutes.js';
 import teamRoutes from './routes/teamRoutes.js';
+import adminRoutes from './routes/adminRoutes.js';
+import clientRoutes from './routes/clientRoutes.js';
 import { notFoundHandler, errorHandler } from './utils/errorHandlers.js';
 
 dotenv.config();
@@ -39,6 +41,8 @@ app.get('/health', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/profiles', profileRoutes);
 app.use('/api/teams', teamRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api/client', clientRoutes);
 
 app.use(notFoundHandler);
 app.use(errorHandler);

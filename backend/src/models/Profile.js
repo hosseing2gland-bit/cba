@@ -12,6 +12,14 @@ const fingerprintSchema = new mongoose.Schema({
   canvas: { type: String, default: 'noise' },
   webgl: { type: String, default: 'noise' },
   audio: { type: String, default: 'noise' },
+  userAgent: String,
+  timezone: String,
+  language: String,
+  screen: {
+    width: Number,
+    height: Number,
+    pixelRatio: Number,
+  },
 }, { _id: false });
 
 const cloudSyncSchema = new mongoose.Schema({
@@ -28,7 +36,9 @@ const profileSchema = new mongoose.Schema({
   name: { type: String, required: true },
   description: String,
   proxy: proxySchema,
-  fingerprint: fingerprintSchema,
+  fingerprint: { type: mongoose.Schema.Types.ObjectId, ref: 'Fingerprint' },
+  fingerprintSnapshot: fingerprintSchema,
+  signature: { type: mongoose.Schema.Types.ObjectId, ref: 'Signature' },
   timezone: String,
   language: String,
   geolocation: {
