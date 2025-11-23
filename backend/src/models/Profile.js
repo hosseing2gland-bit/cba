@@ -39,6 +39,7 @@ const profileSchema = new mongoose.Schema({
   team: { type: mongoose.Schema.Types.ObjectId, ref: 'Team' },
   sharedWith: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   cloudSync: cloudSyncSchema,
+  version: { type: Number, default: 1 },
 }, {
   timestamps: true,
 });

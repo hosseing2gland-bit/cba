@@ -43,11 +43,19 @@ app.use('/api/teams', teamRoutes);
 app.use(notFoundHandler);
 app.use(errorHandler);
 
-async function bootstrap() {
+export async function connectDatabase(uri = process.env.MONGODB_URI) {
+  return mongoose.connect(uri, { serverSelectionTimeoutMS: 5000 });
+}
+
+export async function disconnectDatabase() {
+  if (mongoose.connection.readyState !== 0) {
+    await mongoose.connection.close();
+  }
+}
+
+export async function bootstrap() {
   try {
-    await mongoose.connect(process.env.MONGODB_URI, {
-      serverSelectionTimeoutMS: 5000,
-    });
+    await connectDatabase();
     app.listen(PORT, () => {
       console.log(`API running on port ${PORT}`);
     });
@@ -57,6 +65,8 @@ async function bootstrap() {
   }
 }
 
-bootstrap();
+if (process.env.NODE_ENV !== 'test') {
+  bootstrap();
+}
 
 export default app;

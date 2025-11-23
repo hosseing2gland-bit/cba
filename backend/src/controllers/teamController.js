@@ -1,5 +1,6 @@
 import { validationResult } from 'express-validator';
 import Team from '../models/Team.js';
+import { ensureTeamRole } from '../utils/authorization.js';
 
 function validate(req, res) {
   const errors = validationResult(req);
@@ -27,10 +28,12 @@ export async function createTeam(req, res) {
 
 export async function addMember(req, res) {
   if (!validate(req, res)) return;
-  const team = await Team.findOne({ _id: req.params.teamId, owner: req.user.id });
+  const team = await Team.findById(req.params.teamId);
   if (!team) return res.status(404).json({ message: 'Team not found' });
+  const canManage = ensureTeamRole(team, req.user.id, ['owner', 'admin']);
+  if (!canManage) return res.status(403).json({ message: 'Forbidden' });
   const exists = team.members.some((member) => member.user.toString() === req.body.userId);
-  if (!exists) team.members.push({ user: req.body.userId, role: req.body.role || 'viewer' });
+  if (!exists) team.members.push({ user: req.body.userId, role: req.body.role || 'member' });
   await team.save();
   res.json(team);
 }
@@ -39,6 +42,8 @@ export async function shareProfileWithTeam(req, res) {
   if (!validate(req, res)) return;
   const team = await Team.findOne({ _id: req.params.teamId, members: { $elemMatch: { user: req.user.id } } });
   if (!team) return res.status(404).json({ message: 'Team not found or unauthorized' });
+  const canShare = ensureTeamRole(team, req.user.id, ['owner', 'admin']);
+  if (!canShare) return res.status(403).json({ message: 'Forbidden' });
   team.sharedProfiles.addToSet(req.body.profileId);
   await team.save();
   res.json(team);
