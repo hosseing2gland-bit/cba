@@ -1,0 +1,93 @@
+:root {
+  color-scheme: dark;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: #0c1524;
+  color: #f4f7ff;
+}
+
+body {
+  margin: 0;
+  padding: 24px;
+  background: #0c1524;
+}
+
+h1 {
+  margin-top: 0;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
+}
+
+.card {
+  background: #121c31;
+  border: 1px solid #1f2a45;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+label {
+  display: block;
+  margin: 10px 0 4px;
+  font-size: 14px;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #243556;
+  background: #0d1526;
+  color: #fff;
+  resize: vertical;
+}
+
+button {
+  background: #3b82f6;
+  border: none;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 12px;
+}
+
+button:disabled {
+  background: #1f2a45;
+  cursor: not-allowed;
+}
+
+.list {
+  display: grid;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.badge {
+  background: #1f2a45;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.inline-actions button {
+  margin-inline-start: 8px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
