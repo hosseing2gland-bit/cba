@@ -7,6 +7,8 @@ import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
 
 import authRoutes from './routes/authRoutes.js';
+import adminRoutes from './routes/adminRoutes.js';
+import clientRoutes from './routes/clientRoutes.js';
 import profileRoutes from './routes/profileRoutes.js';
 import teamRoutes from './routes/teamRoutes.js';
 import { notFoundHandler, errorHandler } from './utils/errorHandlers.js';
@@ -37,6 +39,8 @@ app.get('/health', (req, res) => {
 });
 
 app.use('/api/auth', authRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api/client', clientRoutes);
 app.use('/api/profiles', profileRoutes);
 app.use('/api/teams', teamRoutes);
 
