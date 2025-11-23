@@ -15,6 +15,7 @@ const fingerprintSchema = new mongoose.Schema({
 }, { _id: false });
 
 const cloudSyncSchema = new mongoose.Schema({
+  keyId: String,
   encryptedData: String,
   iv: String,
   authTag: String,
