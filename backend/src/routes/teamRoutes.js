@@ -9,7 +9,11 @@ const teamId = param('teamId').isMongoId();
 router.use(requireAuth);
 router.get('/', listTeams);
 router.post('/', [body('name').isLength({ min: 3 })], createTeam);
-router.post('/:teamId/members', [teamId, body('userId').isMongoId()], addMember);
+router.post(
+  '/:teamId/members',
+  [teamId, body('userId').isMongoId(), body('role').optional().isIn(['owner', 'admin', 'member'])],
+  addMember,
+);
 router.post('/:teamId/share-profile', [teamId, body('profileId').isMongoId()], shareProfileWithTeam);
 
 export default router;

@@ -7,9 +7,11 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "test": "node --test"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.621.0",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
@@ -23,6 +25,7 @@
   },
   "devDependencies": {
     "eslint": "^8.56.0",
+    "mongodb-memory-server": "^10.1.4",
     "nodemon": "^3.0.1"
   }
 }
