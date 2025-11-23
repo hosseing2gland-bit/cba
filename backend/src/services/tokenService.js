@@ -14,13 +14,22 @@ function parseKeySet(raw, label) {
   }, {});
 }
 
-const accessKeySet = parseKeySet(process.env.JWT_ACCESS_KEY_SET || process.env.JWT_SECRET, 'JWT_ACCESS_KEY_SET');
-const refreshKeySet = parseKeySet(
-  process.env.JWT_REFRESH_KEY_SET || process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET,
-  'JWT_REFRESH_KEY_SET',
-);
-const activeAccessKid = process.env.JWT_ACTIVE_KID || Object.keys(accessKeySet)[0];
-const activeRefreshKid = process.env.JWT_REFRESH_ACTIVE_KID || Object.keys(refreshKeySet)[0];
+let accessKeySet;
+let refreshKeySet;
+let activeAccessKid;
+let activeRefreshKid;
+
+function ensureKeySets() {
+  if (accessKeySet && refreshKeySet && activeAccessKid && activeRefreshKid) return;
+
+  accessKeySet = parseKeySet(process.env.JWT_ACCESS_KEY_SET || process.env.JWT_SECRET, 'JWT_ACCESS_KEY_SET');
+  refreshKeySet = parseKeySet(
+    process.env.JWT_REFRESH_KEY_SET || process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET,
+    'JWT_REFRESH_KEY_SET',
+  );
+  activeAccessKid = process.env.JWT_ACTIVE_KID || Object.keys(accessKeySet)[0];
+  activeRefreshKid = process.env.JWT_REFRESH_ACTIVE_KID || Object.keys(refreshKeySet)[0];
+}
 
 function resolveKey(token, keySet, activeKid) {
   const decoded = jwt.decode(token, { complete: true });
@@ -33,10 +42,12 @@ function resolveKey(token, keySet, activeKid) {
 }
 
 export function generateAccessToken(payload) {
+  ensureKeySets();
   return jwt.sign(payload, accessKeySet[activeAccessKid], { expiresIn: accessExpiry, keyid: activeAccessKid });
 }
 
 export function generateRefreshToken(payload) {
+  ensureKeySets();
   return jwt.sign(payload, refreshKeySet[activeRefreshKid], {
     expiresIn: refreshExpiry,
     keyid: activeRefreshKid,
@@ -44,11 +55,13 @@ export function generateRefreshToken(payload) {
 }
 
 export function verifyAccessToken(token) {
+  ensureKeySets();
   const key = resolveKey(token, accessKeySet, activeAccessKid);
   return jwt.verify(token, key);
 }
 
 export function verifyRefreshToken(token) {
+  ensureKeySets();
   const key = resolveKey(token, refreshKeySet, activeRefreshKid);
   return jwt.verify(token, key);
 }
