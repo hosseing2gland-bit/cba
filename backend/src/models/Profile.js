@@ -53,5 +53,19 @@ const profileSchema = new mongoose.Schema({
   timestamps: true,
 });
 
+profileSchema.pre('validate', function migrateEmbeddedFingerprint(next) {
+  const fp = this.fingerprint;
+  const isValidObjectId = mongoose.isValidObjectId(fp);
+
+  if (fp && typeof fp === 'object' && !isValidObjectId) {
+    if (!this.fingerprintSnapshot) {
+      this.fingerprintSnapshot = fp.toObject?.() ?? fp;
+    }
+    this.fingerprint = undefined;
+  }
+
+  next();
+});
+
 const Profile = mongoose.model('Profile', profileSchema);
 export default Profile;
