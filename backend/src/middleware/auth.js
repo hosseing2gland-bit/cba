@@ -18,11 +18,22 @@ export async function requireAuth(req, res, next) {
   }
 }
 
-export function requireRole(role) {
+export function requireRole(roles = []) {
+  const allowedRoles = Array.isArray(roles) ? roles : [roles];
+
   return (req, res, next) => {
-    if (req.user?.role !== role) {
-      return res.status(403).json({ message: 'Forbidden' });
+    const userRole = req.user?.role;
+    if (!userRole) {
+      return res.status(401).json({ message: 'Unauthorized' });
     }
-    return next();
+
+    if (userRole === 'admin' || allowedRoles.includes(userRole)) {
+      return next();
+    }
+
+    return res.status(403).json({ message: 'Forbidden' });
   };
 }
+
+export const requireAdmin = requireRole('admin');
+export const requireClient = requireRole('client');

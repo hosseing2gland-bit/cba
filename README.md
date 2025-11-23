@@ -75,11 +75,21 @@ antidetect-browser/
 PORT=3000
 MONGODB_URI=mongodb://localhost:27017/antidetect
 JWT_SECRET=your-secret-key
+JWT_REFRESH_SECRET=your-refresh-secret
 AWS_ACCESS_KEY=your-aws-key
 AWS_SECRET_KEY=your-aws-secret
 AWS_BUCKET=antidetect-profiles
 ENCRYPTION_KEY=your-32-character-key
+PROFILE_TOKEN_SECRET=your-profile-token-secret
+PROFILE_TOKEN_EXPIRY=30m
 ```
+
+### نقش‌ها و کنترل دسترسی
+
+- نقش‌های فعال: `admin` و `client`
+- تمامی مسیرهای محافظت‌شده از `requireAuth` و `requireRole` استفاده می‌کنند.
+- مسیرهای تیم برای ساخت/اشتراک‌گذاری تیم محدود به `admin` هستند.
+- صدور توکن اختصاصی پروفایل فقط توسط نقش `client` انجام می‌شود.
 
 ## 📚 API Documentation
 
@@ -98,6 +108,7 @@ ENCRYPTION_KEY=your-32-character-key
 - `DELETE /api/profiles/:id` - حذف پروفایل
 - `POST /api/profiles/:id/clone` - کپی پروفایل
 - `POST /api/profiles/:id/sync` - همگام‌سازی با Cloud
+- `POST /api/profiles/:id/access-token` - صدور توکن اختصاصی برای دسترسی ایزوله پروفایل
 
 ### Teams
 
@@ -105,6 +116,10 @@ ENCRYPTION_KEY=your-32-character-key
 - `POST /api/teams` - ایجاد تیم جدید
 - `POST /api/teams/:teamId/members` - افزودن عضو به تیم
 - `POST /api/teams/:teamId/share-profile` - اشتراک‌گذاری پروفایل
+
+### Gateway آینده (Admin ↔ Client)
+- اسکلت اولیه در `backend/src/services/commGateway.js` برای Gateway سبک REST/WebSocket قرار داده شده است.
+- هدف ایجاد کانال امن بین ادمین و کلاینت بدون افشای سایر سرویس‌هاست.
 
 ## 🔒 امنیت
 
