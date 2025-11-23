@@ -14,5 +14,26 @@ const teamSchema = new mongoose.Schema({
   timestamps: true,
 });
 
+const LEGACY_ROLE_MAP = {
+  owner: 'owner',
+  admin: 'admin',
+  member: 'member',
+  editor: 'admin',
+  viewer: 'member',
+};
+
+teamSchema.pre('validate', function migrateLegacyRoles(next) {
+  if (Array.isArray(this.members)) {
+    this.members.forEach((member) => {
+      if (!member.role) return;
+      const mappedRole = LEGACY_ROLE_MAP[member.role];
+      if (mappedRole && mappedRole !== member.role) {
+        member.role = mappedRole;
+      }
+    });
+  }
+  next();
+});
+
 const Team = mongoose.model('Team', teamSchema);
 export default Team;
