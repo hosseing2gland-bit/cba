@@ -1,0 +1,14 @@
+{
+  "name": "antidetect-desktop",
+  "version": "1.0.0",
+  "main": "main/main.js",
+  "type": "module",
+  "scripts": {
+    "start": "electron .",
+    "lint": "echo 'No linting configured for desktop yet'"
+  },
+  "dependencies": {
+    "electron": "^28.0.0"
+  },
+  "devDependencies": {}
+}
