@@ -13,7 +13,18 @@ function validationGuard(req, res) {
 }
 
 export async function listProfiles(req, res) {
-  const profiles = await Profile.find({ $or: [{ owner: req.user.id }, { sharedWith: req.user.id }] }).lean();
+  const teams = await Team.find({ members: { $elemMatch: { user: req.user.id } } }).select('_id sharedProfiles').lean();
+  const teamIds = teams.map((team) => team._id);
+  const teamSharedProfileIds = teams.flatMap((team) => team.sharedProfiles || []);
+
+  const profiles = await Profile.find({
+    $or: [
+      { owner: req.user.id },
+      { sharedWith: req.user.id },
+      { team: { $in: teamIds } },
+      { _id: { $in: teamSharedProfileIds } },
+    ],
+  }).lean();
   res.json(profiles);
 }
 
@@ -24,7 +35,19 @@ export async function createProfile(req, res) {
 }
 
 export async function getProfile(req, res) {
-  const profile = await Profile.findOne({ _id: req.params.id, $or: [{ owner: req.user.id }, { sharedWith: req.user.id }] });
+  const teams = await Team.find({ members: { $elemMatch: { user: req.user.id } } }).select('_id sharedProfiles').lean();
+  const teamIds = teams.map((team) => team._id);
+  const teamSharedProfileIds = teams.flatMap((team) => team.sharedProfiles || []);
+
+  const profile = await Profile.findOne({
+    _id: req.params.id,
+    $or: [
+      { owner: req.user.id },
+      { sharedWith: req.user.id },
+      { team: { $in: teamIds } },
+      { _id: { $in: teamSharedProfileIds } },
+    ],
+  });
   if (!profile) return res.status(404).json({ message: 'Profile not found' });
   res.json(profile);
 }
