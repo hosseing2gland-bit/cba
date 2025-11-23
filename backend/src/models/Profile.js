@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { fingerprintSnapshotSchema } from './Fingerprint.js';
 
 const proxySchema = new mongoose.Schema({
   type: { type: String, enum: ['http', 'https', 'socks4', 'socks5'] },
@@ -6,12 +7,6 @@ const proxySchema = new mongoose.Schema({
   port: Number,
   username: String,
   password: String,
-}, { _id: false });
-
-const fingerprintSchema = new mongoose.Schema({
-  canvas: { type: String, default: 'noise' },
-  webgl: { type: String, default: 'noise' },
-  audio: { type: String, default: 'noise' },
 }, { _id: false });
 
 const cloudSyncSchema = new mongoose.Schema({
@@ -28,7 +23,9 @@ const profileSchema = new mongoose.Schema({
   name: { type: String, required: true },
   description: String,
   proxy: proxySchema,
-  fingerprint: fingerprintSchema,
+  fingerprint: fingerprintSnapshotSchema,
+  fingerprintRef: { type: mongoose.Schema.Types.ObjectId, ref: 'Fingerprint' },
+  signature: { type: mongoose.Schema.Types.ObjectId, ref: 'Signature' },
   timezone: String,
   language: String,
   geolocation: {
