@@ -58,7 +58,8 @@ export async function refresh(req, res, next) {
     const accessToken = generateAccessToken({ sub: user.id, role: user.role });
     return res.json({ accessToken });
   } catch (error) {
-    if (error?.name?.toLowerCase().includes('jwt')) {
+    const errorName = error?.name?.toLowerCase();
+    if (errorName?.includes('jwt') || errorName === 'tokenexpirederror') {
       return res.status(401).json({ message: 'Unauthorized' });
     }
     return next(error);
