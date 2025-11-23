@@ -5,17 +5,18 @@ import {
   createProfile,
   deleteProfile,
   getProfile,
+  issueClientProfileToken,
   listProfiles,
   shareProfile,
   syncProfile,
   updateProfile,
 } from '../controllers/profileController.js';
-import { requireAuth } from '../middleware/auth.js';
+import { requireAuth, requireRole } from '../middleware/auth.js';
 
 const router = Router();
 const idParam = param('id').isMongoId();
 
-router.use(requireAuth);
+router.use(requireAuth, requireRole(['client', 'admin']));
 router.get('/', listProfiles);
 router.post('/', [body('name').isLength({ min: 2 })], createProfile);
 router.get('/:id', idParam, getProfile);
@@ -24,5 +25,6 @@ router.delete('/:id', idParam, deleteProfile);
 router.post('/:id/clone', idParam, cloneProfile);
 router.post('/:id/sync', idParam, syncProfile);
 router.post('/:id/share', [idParam, body('teamId').isMongoId()], shareProfile);
+router.post('/:id/token', [idParam], requireRole('client'), issueClientProfileToken);
 
 export default router;
