@@ -6,8 +6,17 @@
   "type": "module",
   "scripts": {
     "start": "node src/server.js",
+    "start:prod": "NODE_ENV=production node src/server.js",
     "dev": "nodemon src/server.js",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "test": "npm run test:unit && npm run test:integration",
+    "test:unit": "NODE_ENV=test node --test tests/unit/**/*.test.js",
+    "test:integration": "NODE_ENV=test node --test tests/integration/**/*.test.js",
+    "seed": "node scripts/seed.js",
+    "migrate:up": "node scripts/migrate.js --direction=up",
+    "migrate:down": "node scripts/migrate.js --direction=down",
+    "backup": "node scripts/backup.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

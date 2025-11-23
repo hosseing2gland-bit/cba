@@ -36,12 +36,42 @@ cp .env.example .env
 npm start
 ```
 
+### اجرای Backend و Mongo با Docker Compose
+
+```bash
+docker compose up --build
+# برای ساخت آرتیفکت دسکتاپ: docker compose --profile build up --build desktop-builder
+```
+
+### اسکریپت‌های عملیات دیتابیس
+
+```bash
+# اجرای Seed اولیه (ایجاد کاربر ادمین و پروفایل نمونه)
+npm run seed
+
+# اجرای مهاجرت‌ها (ایجاد TTL بر روی Refresh Tokens)
+npm run migrate:up
+
+# برگشت آخرین مهاجرت
+npm run migrate:down
+
+# پشتیبان‌گیری با mongodump (خروجی در BACKUP_DIR)
+npm run backup
+```
+
 ### 2. نصب Desktop App
 
 ```bash
 cd desktop-app
 npm install
 npm start
+```
+
+برای ساخت بسته دسکتاپ (Linux AppImage/zip):
+
+```bash
+npm run build:linux
+# خروجی در desktop-app/dist قابل دانلود است.
 ```
 
 > **نکته امنیتی**: قبل از اجرا حتماً مقدار `ENCRYPTION_KEY` را در فایل `.env` با یک کلید ۳۲ کاراکتری امن جایگزین کنید و مقادیر JWT را با Secrets منحصربه‌فرد تنظیم نمایید.
@@ -80,6 +110,13 @@ AWS_SECRET_KEY=your-aws-secret
 AWS_BUCKET=antidetect-profiles
 ENCRYPTION_KEY=your-32-character-key
 ```
+
+مقادیر `ADMIN_EMAIL`، `ADMIN_PASSWORD` و `BACKUP_DIR` برای Seed و پشتیبان‌گیری در `.env.example` آماده شده‌اند. برای محیط‌های تولیدی از Secret Manager استفاده کنید.
+
+## 📦 استقرار تولیدی و مانیتورینگ
+
+- مراحل TLS، مدیریت Secrets، سیاست پشتیبان‌گیری/بازیابی و Playbook مانیتورینگ در فایل [docs/operations.md](docs/operations.md) مستند شده است.
+- خط CI شامل Lint، تست واحد/یکپارچه، اسکن امنیتی (`npm audit`/Snyk) و ساخت آرتیفکت دسکتاپ است.
 
 ## 📚 API Documentation
 
