@@ -75,6 +75,8 @@ antidetect-browser/
 PORT=3000
 MONGODB_URI=mongodb://localhost:27017/antidetect
 JWT_SECRET=your-secret-key
+JWT_PROFILE_SECRET=your-profile-token-secret
+PROFILE_TOKEN_EXPIRY=30m
 AWS_ACCESS_KEY=your-aws-key
 AWS_SECRET_KEY=your-aws-secret
 AWS_BUCKET=antidetect-profiles
@@ -98,6 +100,7 @@ ENCRYPTION_KEY=your-32-character-key
 - `DELETE /api/profiles/:id` - حذف پروفایل
 - `POST /api/profiles/:id/clone` - کپی پروفایل
 - `POST /api/profiles/:id/sync` - همگام‌سازی با Cloud
+- `POST /api/profiles/:id/token` - تولید توکن اختصاصی کلاینت برای همان پروفایل
 
 ### Teams
 
