@@ -1,0 +1,42 @@
+version: '3.9'
+
+services:
+  mongo:
+    image: mongo:6
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_DATABASE: antidetect
+    volumes:
+      - mongo-data:/data/db
+    ports:
+      - "27017:27017"
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    env_file:
+      - ./backend/.env.example
+    environment:
+      MONGODB_URI: mongodb://mongo:27017/antidetect
+      NODE_ENV: production
+      PORT: 3000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongo
+    restart: unless-stopped
+
+  desktop-builder:
+    build:
+      context: ./desktop-app
+      dockerfile: Dockerfile
+    environment:
+      BACKEND_URL: http://localhost:3000
+    volumes:
+      - ./desktop-app/dist:/workspace/app/dist
+    profiles: ["build"]
+
+volumes:
+  mongo-data:
+    driver: local
